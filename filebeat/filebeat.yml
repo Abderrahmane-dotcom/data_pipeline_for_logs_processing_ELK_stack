@@ -1,0 +1,34 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/firefox/*.txt  # tes fichiers logs
+    fields:
+      index_name: test_devoir_2_logs
+    fields_under_root: true
+
+    # 🔹 Lecture ligne par ligne (comportement par défaut)
+    harvester_buffer_size: 16384       # taille du buffer de lecture
+    max_bytes: 16384                   # taille max d'une ligne
+    close_eof: false                   # garde le fichier ouvert
+    close_inactive: 10m                # ne ferme pas trop vite le fichier
+    backoff: 0.025s                      # relecture rapide
+    max_backoff: 0.05s                  # délai max avant nouvelle lecture
+    scan_frequency: 0.07s               # rescan du dossier par 0.15 seconde
+    clean_inactive: 0                  # ne nettoie pas les anciens états
+
+# 🔹 Envoi vers Logstash
+output.logstash:
+  hosts: ["logstash:5044"]
+  bulk_max_size: 1        # un seul event à la fois
+  worker: 1               # un seul thread d’envoi
+  loadbalance: false      # pas d’envoi parallèle
+
+# 🔹 Template Elasticsearch (utile même via Logstash)
+setup.template.name: "test_devoir_2_logs"
+setup.template.pattern: "test_devoir_2_logs-*"
+setup.template.enabled: true
+
+# 🔹 Logs Filebeat
+logging.level: info
+# logging.json: true   # décommente si tu veux un format JSON
