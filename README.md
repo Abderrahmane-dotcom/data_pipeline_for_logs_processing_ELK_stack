@@ -164,9 +164,9 @@ results: success
 
 | Field | Type | Description |
 |-------|------|-------------|
-| \uilder\ | text | Builder identifier |
+| \Builder\ | text | Builder identifier |
 | \slave\ | text | Slave machine |
-| \uildid\ | text | Build identifier |
+| \Buildid\ | text | Build identifier |
 | \
 evision\ | text | Git/VCS revision |
 | \exit_code\ | integer | Program exit code |
@@ -191,15 +191,6 @@ docker-compose stop
 
 # Full restart (removes data)
 docker-compose down -v && docker-compose up -d
-\\\
-
-## Adjusting Simulation Speed
-
-Edit \simulate.py\:
-\\\python
-DELAY_BETWEEN_LINES = 0.08  # Default (80ms between lines)
-DELAY_BETWEEN_LINES = 0.01  # Faster (10ms)
-DELAY_BETWEEN_LINES = 1.0   # Slower (1 second)
 \\\
 
 
