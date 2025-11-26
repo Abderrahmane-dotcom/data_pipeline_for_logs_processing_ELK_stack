@@ -176,9 +176,7 @@ esult_status\ | text | Success/failure status |
 | \is_error\ | boolean | Error flag (true if failed) |
 | \@timestamp\ | date | Build start time |
 
-## Common Commands
 
-\\\ash
 # Check all services running
 docker-compose ps
 
