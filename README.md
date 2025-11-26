@@ -15,12 +15,12 @@ This project simulates a real-world distributed build system monitoring solution
 
 ```
 ┌─────────────────┐
-│  Log Files      │  (Build logs from distributed systems)
+│  Log Files      │  (Build logs)
 │  (simulate.py)  │
 └────────┬────────┘
          │
 ┌────────▼────────────────────┐
-│   Filebeat                  │  (Log shipping agent)
+│   Filebeat                  │  (Log shipping)
 │   (beats.yml)               │
 └────────┬────────────────────┘
          │
