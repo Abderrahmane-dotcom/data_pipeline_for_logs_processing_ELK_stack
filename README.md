@@ -2,21 +2,65 @@
 
 A simulation project that reads historical build logs from files and processes them through the ELK pipeline to demonstrate real-time log processing, parsing, and analysis.
 
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     ELK LOG PROCESSING PIPELINE                 │
+└─────────────────────────────────────────────────────────────────┘
+
+    logs_data/
+    (static files)
+         │
+         │ read
+         ▼
+   ┌──────────────┐
+   │ simulate.py  │  ◄─── Simulates real-time by adding delays
+   │              │       (0.08s per line by default)
+   └──────────────┘
+         │
+         │ write line-by-line
+         ▼
+    logs/
+  (monitored)
+         │
+         │ watch & ship
+         ▼
+   ┌──────────────────┐
+   │    Filebeat      │  ◄─── Real-time log shipper
+   │  (port 5044)     │       Ships to Logstash via beats protocol
+   └──────────────────┘
+         │
+         │ send events
+         ▼
+   ┌──────────────────┐
+   │    Logstash      │  ◄─── Processing & enrichment
+   │  (port 5000)     │   ┌─ Extract: builder, slave, buildid
+   └──────────────────┘   ├─ Parse: exit_code, elapsed_time
+         │                ├─ Compute: is_error flag
+         │                └─ Remove: noise/separators
+         │ index
+         ▼
+   ┌──────────────────┐
+   │ Elasticsearch    │  ◄─── Central data store
+   │  (port 9200)     │       Index: test_devoir_2_logs
+   └──────────────────┘
+         │
+         │ query
+         ▼
+   ┌──────────────────┐
+   │     Kibana       │  ◄─── Visualization & Analysis
+   │  (port 5601)     │       Discover, Visualize, Dashboard
+   └──────────────────┘
+```
+
 ## What It Does
 
-`
-Historical Build Logs (logs_data/)
-        
-   simulate.py (reads & simulates real-time processing with delays)
-        
-   Filebeat (ships line by line to Logstash)
-        
-   Logstash (parses headers, extracts metrics, detects errors)
-        
-   Elasticsearch (indexes everything)
-        
-   Kibana (visualize & analyze)
-`
+1. **simulate.py** reads historical logs from `logs_data/` and writes them to `logs/` with delays
+2. **Filebeat** watches `logs/` and ships new lines to Logstash
+3. **Logstash** processes each line: extracts headers, parses metrics, detects errors
+4. **Elasticsearch** stores everything in index `test_devoir_2_logs`
+5. **Kibana** visualizes and analyzes the processed data
 
 ## Quick Start
 
@@ -171,3 +215,18 @@ DELAY_BETWEEN_LINES = 1.0   # Slower (1 second)
 ---
 
 **Version:** 1.0 | **ELK Stack:** 7.16.2 | **Last Updated:** November 2025
+/www.elastic.co/guide/en/beats/filebeat/7.16/index.html)
+
+## 📄 License
+
+This project is provided as-is for educational and development purposes.
+
+## 👤 Author
+
+Created for distributed log analysis and build system monitoring.
+
+---
+
+**Last Updated:** November 2025  
+**ELK Stack Version:** 7.16.2  
+
